@@ -1,21 +1,11 @@
-import { Hono } from "hono"
-import { handle } from "hono/vercel"
-import { trpcServer } from "@hono/trpc-server" // Deno 'npm:@hono/trpc-server'
-import { appRouter } from "@/trpc/routers/_app"
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch"
 import { createTRPCContext } from "@/trpc/init"
-
-const app = new Hono()
-
-app.use(
-  "/api/trpc/*",
-  trpcServer({
-    router: appRouter,
+import { appRouter } from "@/trpc/routers/_app"
+const handler = (req: Request) =>
+  fetchRequestHandler({
     endpoint: "/api/trpc",
+    req,
+    router: appRouter,
     createContext: createTRPCContext,
   })
-)
-
-export const GET = handle(app)
-export const POST = handle(app)
-export const PUT = handle(app)
-export const DELETE = handle(app)
+export { handler as GET, handler as POST }

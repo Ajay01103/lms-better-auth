@@ -1,18 +1,18 @@
 import { auth } from "@/lib/auth"
-import { SignUpView } from "@/modules/auth/views/sign-up-view"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import React from "react"
 
-const SignUpPage = async () => {
+const page = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
-  if (!!session) {
-    redirect("/dashboard")
+  if (!session) {
+    redirect("/sign-in")
   }
 
-  return <SignUpView />
+  return <div>page {JSON.stringify(session.user.role)}</div>
 }
 
-export default SignUpPage
+export default page
